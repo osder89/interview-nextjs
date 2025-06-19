@@ -10,33 +10,20 @@ import ReviewsClient from './ReviewsClient'
 const JWT_SECRET = process.env.JWT_SECRET!
 
 export default async function ReviewsPage() {
-  const token = (await cookies()).get('token')?.value
-  let validToken = false
+  const token = (await cookies()).get('token')?.value;
 
-  if (token) {
-    try {
-      verify(token, JWT_SECRET)
-      validToken = true
-    } catch {
-      validToken = false
-    }
+  if (!token) return redirect('/login');
+
+  try {
+    verify(token, JWT_SECRET);
+  } catch {
+    return redirect('/login');
   }
 
-  if (!validToken) {
-    return (
-      <html>
-        <head>
-          <meta httpEquiv="refresh" content="0; url=/login" />
-        </head>
-      </html>
-    )
-  }
+  await initDB();
+  const raw = await getAllReviews();
+  const reviews = raw.map(r => r.get({ plain: true }));
 
-  await initDB()
-  const raw = await getAllReviews()
-  const reviews = raw.map(r => r.get({ plain: true }))
-
-  return <ReviewsClient reviews={reviews} />
+  return <ReviewsClient reviews={reviews} />;
 }
-
 

@@ -10,6 +10,12 @@ declare global {
 const connectionString = process.env.DATABASE_URL!
 const options = {
   dialect: 'postgres' as const,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
   logging: false,
 }
 
