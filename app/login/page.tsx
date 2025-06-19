@@ -22,7 +22,7 @@ export default function SignupPage() {
     setError(null)
     setLoading(true)
     try {
-      const res = await fetch('/api/signup', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -32,9 +32,9 @@ export default function SignupPage() {
         setError(data.error || 'Error desconocido')
         return
       }
-      router.push('/login')
+      router.push('/reviews')
     } catch {
-      setError('No se pudo conectar con el servidor')
+      setError('Your Email or Password is incorrect')
     } finally {
       setLoading(false)
     }
