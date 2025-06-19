@@ -3,19 +3,17 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { initDB } from '@/utils/db'
-import { getReviews, addReview, removeReview } from '@/services/reviewService'
+import { removeReview } from '@/services/reviewService'
 import { verify } from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET!
 
-export async function GET() {
+export async function DELETE(
+  req: Request,
+  context: { params: { id: string } | Promise<{ id: string }> }
+) {
   await initDB()
-  const reviews = await getReviews()
-  return NextResponse.json(reviews)
-}
 
-export async function POST(req: Request) {
-  await initDB()
   const token = (await cookies()).get('token')?.value
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -26,15 +24,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { bookTitle, rating, review, mood } = await req.json()
-  const newReview = await addReview({
-    userId: payload.id,
-    bookTitle,
-    rating,
-    review,
-    mood,
-  })
-  return NextResponse.json(newReview, { status: 201 })
+  const { id } = await context.params
+  const reviewId = parseInt(id, 10)
+
+  try {
+    await removeReview(reviewId, payload.id)
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 403 })
+  }
+
+  return new NextResponse(null, { status: 204 })
 }
-
-
