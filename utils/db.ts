@@ -21,8 +21,8 @@ const options = {
 
 export const sequelize: Sequelize = global.__sequelize ?? new Sequelize(connectionString, options)
 
-if (process.env.NODE_ENV !== 'production') {
-  global.__sequelize = sequelize
+if (!process.env.DATABASE_URL) {
+  throw new Error('❌ DATABASE_URL no está definida')
 }
 
 export function initDB(): Promise<void> {
