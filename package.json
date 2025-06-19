@@ -4,8 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "sync": "node --experimental-specifier-resolution=node --loader ts-node/esm app/utils/sync.ts",
+    "dev": "next dev",
+    "sync": "node --experimental-specifier-resolution=node --loader ts-node/esm utils/sync.ts",
     "sync:watch": "nodemon",
     "build": "next build",
     "start": "next start",
@@ -21,6 +21,7 @@
     "pg-hstore": "^2.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
