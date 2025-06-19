@@ -8,10 +8,7 @@ import { verify } from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET!
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request) {
   await initDB()
 
   const token = (await cookies()).get('token')?.value
@@ -24,7 +21,9 @@ export async function DELETE(
     return NextResponse.json(null, { status: 401 })
   }
 
-  const reviewId = parseInt(params.id, 10)
+  const url = new URL(request.url)
+  const parts = url.pathname.split('/')
+  const reviewId = parseInt(parts.at(-1)!, 10)
 
   try {
     await removeReview(reviewId, payload.id)
