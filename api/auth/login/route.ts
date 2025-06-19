@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
  
 import { NextResponse } from 'next/server'
-import { loginUser } from '../../../../../services/authService'
+import { loginUser } from '../../../services/authService'
 import { serialize } from 'cookie'
 
 export async function POST(request: Request) {
