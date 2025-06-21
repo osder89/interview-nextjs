@@ -22,7 +22,15 @@ export default async function ReviewsPage() {
 
   await initDB();
   const raw = await getAllReviews();
-  const reviews = raw.map(r => r.get({ plain: true }));
+  const reviews = raw.map((r: any) => ({
+    id: r.id,
+    booktitle: r.booktitle,
+    rating: r.rating,
+    review: r.review ?? '',
+    mood: r.mood ?? '',
+    createdAt: r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
+    User: { name: r.users.name }
+  }));
 
   return <ReviewsClient reviews={reviews} />;
 }
