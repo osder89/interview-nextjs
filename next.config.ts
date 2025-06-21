@@ -1,20 +1,14 @@
 import type { NextConfig } from 'next'
+import path from 'path'
 
 const nextConfig: NextConfig = {
-  webpack: (config, { isServer }): any => {
+  transpilePackages: ['pg', 'pg-hstore', 'sequelize'],
+  webpack: (config, { isServer }) => {
     if (isServer) {
-      config.externals = config.externals || []
-      config.externals.push(
-        (
-          { request }: { request: string },
-          callback: (error?: Error | null, result?: string) => void
-        ) => {
-          if (/^(pg|pg-hstore|sequelize)$/.test(request)) {
-            return callback(null, `commonjs ${request}`)
-          }
-          callback()
-        }
-      )
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        pg: path.resolve(__dirname, 'node_modules/pg'),
+      }
     }
     return config
   },
@@ -22,9 +16,9 @@ const nextConfig: NextConfig = {
     {
       source: '/',
       destination: '/login',
-      permanent: false
-    }
-  ]
+      permanent: false,
+    },
+  ],
 }
 
 export default nextConfig

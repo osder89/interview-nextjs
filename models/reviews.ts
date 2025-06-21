@@ -1,56 +1,26 @@
-import { DataTypes, Model, BelongsToGetAssociationMixin } from 'sequelize'
-import sequelize from '../utils/db'
-import User from './user'
+// models/Review.ts
+import type { Prisma } from "@prisma/client"
 
-class Reviews extends Model {
-  declare id: number
-  declare userId: number
-  declare booktitle: string
-  declare rating: number
-  declare review: string
-  declare mood: string
-  declare createdAt: Date
+export type IReview = Prisma.reviewsGetPayload<{}>
 
-  declare getUser: BelongsToGetAssociationMixin<typeof User>
-}
+export class Review {
+  id: number
+  bookTitle: string
+  rating: number
+  review?: string | null
+  mood?: string | null
+  userId: number
+  createdAt: Date
+  updatedAt: Date
 
-Reviews.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    booktitle: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    rating: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    review: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    mood: {
-      type: DataTypes.STRING,
-      allowNull: true
-    }
-  },
-  {
-    sequelize,
-    modelName: 'Reviews',
-    tableName: 'reviews',
-    timestamps: true
+  constructor(data: IReview) {
+    this.id = data.id
+    this.bookTitle = data.booktitle
+    this.rating = data.rating
+    this.review = data.review
+    this.mood = data.mood
+    this.userId = data.userId
+    this.createdAt = data.createdAt
+    this.updatedAt = data.updatedAt
   }
-)
-
-Reviews.belongsTo(User, { foreignKey: 'userId', as: 'User' })
-User.hasMany(Reviews, { foreignKey: 'userId', as: 'reviews' })
-
-export default Reviews
+}
